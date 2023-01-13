@@ -1,0 +1,287 @@
+﻿
+@{
+    ViewBag.Title = "Usuarios";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<ol class="breadcrumb mb-4 mt-4">
+    <li class="breadcrumb-item"><a href=@Url.Action("Index","Home")>Resumen</a></li>
+    <li class="breadcrumb-item active">Usuarios</li>
+</ol>
+
+
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-users me-1"></i> Lista de Usuarios
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12">
+                <button type="button" class="btn btn-success" onclick="abrirModal(null)">Crear Nuevo Usuario</button>
+            </div>
+        </div>
+
+        <hr />
+
+        <table id="tablausuarios" class="display cell border" style="width: 100%">
+            <thead>
+                <tr>
+                    <th>Nombres</th>
+                    <th>Apellidos</th>
+                    <th>Correo</th>
+                    <th>Activo</th>
+                    <th>Opciones</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="FormModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="exampleModalLabel">Usuario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <input id="txtid" type="hidden" value="0"/>
+                <div class="row g-2">
+
+                    <div class="col-sm-6">
+                        <label for="txtnombres" class="form-label">Nombres</label>
+                        <input type="text" class="form-control" id="txtnombres" placeholder="Nombre..." autocomplete="off">
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label for="txtapellidos" class="form-label">Apellido</label>
+                        <input type="text" class="form-control" id="txtapellidos" placeholder="Apellido..." autocomplete="off">
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label for="txtcorreo" class="form-label">Correo</label>
+                        <input type="email" class="form-control" id="txtcorreo" placeholder="Correo..." autocomplete="off">
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label for="cboactivo" class="form-label">Activo</label>
+                        <select class="form-select" id="cboactivo">
+                            <option value="1">Si</option>
+                            <option value="0">No</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-12">
+                        <div id="mensajeError"class="alert alert-danger" role="alert">
+                            A simple danger alert—check it out!
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" onclick="Guardar()">Guardar cambios</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+
+        var tabladata;
+        var filaSeleccionada;
+        //SETEO DE LA TABLA DE USUARIOS
+        tabladata = $("#tablausuarios").DataTable({
+            responsive: true,
+            ordering: false,
+            "ajax": {
+                url: '@Url.Action("ListarUsuarios","Home")',
+                type: "GET",
+                datatype: "json",
+            },
+            "columns": [
+                //DEFINICION DE LAS COLUMNAS
+                { "data": "Nombres" },
+                { "data": "Apellidos" },
+                { "data": "Correo" },
+                {
+                    "data": "Activo", render: function (valor) {
+                        if (valor) {
+                            return '<span class="badge bg-success">Si</span>';
+                        }
+                        else {
+                            return '<span class="badge bg-danger">No</span>';
+                        }
+                    }
+                },
+                {
+                    //COLUMNA DEFAULT (PARA BOTON EDITAR Y ELIMINAR)
+                    "defaultContent": '<button type="button" class="btn btn-primary btn-sm btn-editar"><i class="fas fa-pen"></i></button>' +
+                        '<button type="button" class="btn btn-danger btn-sm ms-2 btn-eliminar"><i class="fas fa-trash"></i></button>',
+                    "orderable": false,
+                    "searchable": false,
+                    "width": "90px"
+                }
+            ],
+            //CAMBIO DE IDIOMA DE LA TABLA
+            "language": {
+                "url": "https://cdn.datatables.net/plug-ins/1.13.1/i18n/es-ES.json"
+            }
+        });
+
+
+        function abrirModal(json) {
+
+            //LIMPIA TODOS LOS TXT
+            $("#txtid").val(0)
+            $("#txtnombres").val("")
+            $("#txtapellidos").val("")
+            $("#txtcorreo").val("")
+            $("#cboactivo").val(1)
+            $("#mensajeError").hide()
+
+            //SI EL JSON TIENE ALGO, SE LOS SETEA A LOS TXT. SINO, EL JSON YA ESTA SETEADO EN NULL.
+            if (json != null) {
+                $("#txtid").val(json.IdUsuario)
+                $("#txtnombres").val(json.Nombres)
+                $("#txtapellidos").val(json.Apellidos)
+                $("#txtcorreo").val(json.Correo)
+                $("#cboactivo").val(json.Activo==true ? 1:0)
+            }
+
+            //ABRE EL MODAL
+            $("#FormModal").modal("show");
+        }
+
+        //CONSIGUE LA FILA EN LA QUE SE TOCÓ EL BOTON EDITAR. ASI, GUARDA TODO EN UNA VARIABLE Y SE LO PASA AL METODO abrirModal()
+        $("#tablausuarios tbody").on("click", ".btn-editar", function () {
+            filaSeleccionada = $(this).closest("tr")
+            var data = tabladata.row(filaSeleccionada).data();
+
+            abrirModal(data)
+        })
+
+        //DETECTAMOS LA FILA EN LA QUE SE TODO ELIMINAR. ASI, GUARDAMOS ESE REGISTRO EN UNA VARIABLE
+        $("#tablausuarios tbody").on("click", ".btn-eliminar", function () {
+            usuarioSeleccionado = $(this).closest("tr")
+            var data = tabladata.row(usuarioSeleccionado).data();
+
+            //ABRIMOS UN SWAL PARA EL MODAL DE ELIMINAR Y SE SETEA
+            swal({
+                title: "Está seguro?",
+                text: "Desea eliminar el usuario?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-success",
+                confirmButtonText: "Si!",
+                cancelButtonText: "No!",
+                closeOnConfirm: false,
+            },
+                function () {
+                    //ABRIMOS UN AJAX PARA CORRER EL METODO "EliminarUsuario", PASANDOLE EL ID EN LA PROPIEDAD "data"
+                    jQuery.ajax({
+                        url: '@Url.Action("EliminarUsuario", "Home")',
+                        type: "POST",
+                        data: JSON.stringify({ id : data.IdUsuario }),
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (data) { /*Este data es el json que devuelve el metodo EliminarUsuario(resultado = resultado, mensaje = mensaje)*/
+                            if (data.resultado) {
+                                tabladata.row(usuarioSeleccionado).remove().draw();
+                                swal("Borrado!", "El usuario fue eliminado correctamente.", "success");
+                            }
+                            else {
+                                swal("No se pudo borrar!", data.mensaje, "error");
+
+                            }
+                        },
+                        error: function (error) {
+                            console.log(error)
+                        }
+
+                    });     
+                });
+            console.log(data);
+        });
+
+        
+        function Guardar() {
+            //GUARDAMOS TODA LA INFORMACION DE LOS INPUTS EN UNA VARIABLE USUARIO
+            var Usuario = {
+                IdUsuario: $("#txtid").val(),
+                Nombres: $("#txtnombres").val(),
+                Apellidos: $("#txtapellidos").val(),
+                Correo: $("#txtcorreo").val(),
+                Activo: $("#cboactivo").val() == 1 ? true : false  
+            }
+
+            jQuery.ajax({
+                url: '@Url.Action("GuardarUsuario","Home")',
+                type: "POST",
+                data: JSON.stringify({ objeto : Usuario }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) { /*Este data es el json que devuelve el metodo GuardarUsuario(resultado = resultado, mensaje = mensaje)*/
+                    $(".modal-body").LoadingOverlay("hide");
+
+                    //USUARIO NUEVO
+                    if (Usuario.IdUsuario == 0) {
+                        if (data.resultado != 0) {
+                            //SI EL USUARIO ES NUEVO(IdUsuario==0) Y data.resultado !=0 (PUDO AGREGAR EL REGISTRO), GUARDA EL ID, LO DIBUJA EN PANTALLA Y OCULTA EL MODAL
+                            Usuario.IdUsuario = data.resultado;
+                            tabladata.row.add(Usuario).draw(false)
+                            $("#FormModal").modal("hide");
+                        }
+                        else {
+                            $("#mensajeError").text(data.mensaje)
+                            $("#mensajeError").show()
+                        }
+
+                    }
+                    //EDITAR USUARIO
+                    else {
+                        if (data.resultado) {
+                            //SI EL RESULTADO ES POSITIVO(PUDO EDITAR), DIBUJA EN PANTALLA LA EDICION, BORRA LA FILASELECCIONADA Y OCULTA EL MODAL
+                            tabladata.row(filaSeleccionada).data(Usuario).draw(false);
+                            filaSeleccionada = null;
+                            $("#FormModal").modal("hide");
+                        }
+                        else {
+                            $("#mensajeError").text(data.mensaje)
+                            $("#mensajeError").show()
+                        }
+                    }
+                },
+                error: function (error) {
+                    //OCULTA EL LOADING Y MUESTRA UN MENSAJE DE ERROR
+                    $(".modal-body").LoadingOverlay("hide");
+                    $("#mensajeError").text("Error Ajax");
+                    $("#mensajeError").show();
+                },
+                beforeSend: function () {
+                    //FUNCION PARA MOSTRAR UN LOADING(Libreria LoadingOverlay)
+                    $(".modal-body").LoadingOverlay("show", {
+                        imageResizeFactor: 2,
+                        text: "Cargando...",
+                        size: 14
+                    })
+                }
+            });
+        }
+    </script>
+
+
+}
+
