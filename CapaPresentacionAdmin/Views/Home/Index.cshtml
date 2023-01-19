@@ -141,7 +141,7 @@
                 type: "GET",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
-                success: function (data) { /*Este data es el json que devuelve el metodo EliminarUsuario(resultado = resultado, mensaje = mensaje)*/
+                success: function (data) { /*Este data es el json que devuelve el metodo VistaDashboard(resultado = objeto, mensaje = mensaje)*/
 
                     var objeto = data.resultado;
 
@@ -180,7 +180,6 @@
                     "url": "https://cdn.datatables.net/plug-ins/1.13.1/i18n/es-ES.json"
                 }
             });
-            /*DataTables warning: table id = tabla - Ajax error.For more information about this error, please see http://datatables.net/tn/7*/
         })
 
         $("#btnbuscar").on("click", function () {

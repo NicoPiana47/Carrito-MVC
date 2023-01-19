@@ -9,3 +9,14 @@ C:\Proyectos NicoPiana47\CursoMVC\CapaNegocio\obj\Debug\CapaNegocio.csproj.CoreC
 C:\Proyectos NicoPiana47\CursoMVC\CapaNegocio\obj\Debug\CapaNegocio.csproj.CopyComplete
 C:\Proyectos NicoPiana47\CursoMVC\CapaNegocio\obj\Debug\CapaNegocio.dll
 C:\Proyectos NicoPiana47\CursoMVC\CapaNegocio\obj\Debug\CapaNegocio.pdb
+C:\Proyectos NicoPiana47\Carrito-MVC\CapaNegocio\bin\Debug\CapaNegocio.dll
+C:\Proyectos NicoPiana47\Carrito-MVC\CapaNegocio\bin\Debug\CapaNegocio.pdb
+C:\Proyectos NicoPiana47\Carrito-MVC\CapaNegocio\bin\Debug\CapaDatos.dll
+C:\Proyectos NicoPiana47\Carrito-MVC\CapaNegocio\bin\Debug\CapaEntidad.dll
+C:\Proyectos NicoPiana47\Carrito-MVC\CapaNegocio\bin\Debug\CapaDatos.pdb
+C:\Proyectos NicoPiana47\Carrito-MVC\CapaNegocio\bin\Debug\CapaEntidad.pdb
+C:\Proyectos NicoPiana47\Carrito-MVC\CapaNegocio\obj\Debug\CapaNegocio.csproj.AssemblyReference.cache
+C:\Proyectos NicoPiana47\Carrito-MVC\CapaNegocio\obj\Debug\CapaNegocio.csproj.CoreCompileInputs.cache
+C:\Proyectos NicoPiana47\Carrito-MVC\CapaNegocio\obj\Debug\CapaNegocio.csproj.CopyComplete
+C:\Proyectos NicoPiana47\Carrito-MVC\CapaNegocio\obj\Debug\CapaNegocio.dll
+C:\Proyectos NicoPiana47\Carrito-MVC\CapaNegocio\obj\Debug\CapaNegocio.pdb

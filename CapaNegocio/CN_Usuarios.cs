@@ -89,6 +89,10 @@ namespace CapaNegocio
                 return false;
             }
         }
+        public bool Eliminar(int id, out string Mensaje)
+        {
+            return objCapaDato.Eliminar(id, out Mensaje);
+        }
 
         public bool CambiarClave(int idusuario, string nuevaclave, out string Mensaje)
         {
@@ -125,12 +129,6 @@ namespace CapaNegocio
                 Mensaje = "No se pudo reestablecer la contraseña";
                 return false;
             }
-        }
-        
-
-            public bool Eliminar(int id, out string Mensaje)
-        {
-            return objCapaDato.Eliminar(id, out Mensaje);
         }
     }
 }
